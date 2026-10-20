@@ -1,1 +1,1 @@
-export const loading: boolean = true;
+export const isLoading: boolean = true;

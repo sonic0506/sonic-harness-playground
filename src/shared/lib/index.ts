@@ -1,1 +1,1 @@
-export { loading } from './flag';
+export { isLoading } from './flag';
