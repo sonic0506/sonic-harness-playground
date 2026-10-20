@@ -9,7 +9,8 @@ interface RenderOptions {
   searchParams?: string;
 }
 
-// 테스트마다 새 QueryClient(retry 없음)로 감싸요.
+// 테스트마다 새 QueryClient(retry 없음)와 URL 상태 adapter로 감싸요.
+// hasMemory: 테스트 중 URL을 바꾸는 동작(검색 입력, 페이지 이동)이 다음 렌더에 반영돼요.
 export function renderWithQuery(
   ui: ReactNode,
   { searchParams = '' }: RenderOptions = {},

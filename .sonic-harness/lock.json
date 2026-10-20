@@ -1,6 +1,6 @@
 {
   "origin": "https://github.com/sonic0506/sonic-harness-fe.git",
-  "ref": "a3efb266b14da9df8da87af18033fd97ff81f2f0",
+  "ref": "649910ffd985f864502dbc61df953e45826484e7",
   "checkedRef": "a3efb266b14da9df8da87af18033fd97ff81f2f0",
   "files": {
     "commitlint.base.mjs": "19482207e6eae61445ab3c6938873ab4cb8c783c88fdb846198357bdc2dc383a",
@@ -36,7 +36,8 @@
     "vitest.setup.ts",
     "src/app/providers/url-state-adapter.tsx"
   ],
-  "updatedAt": "2026-10-20T13:20:02.674Z",
+  "updatedAt": "2026-10-20T22:23:40.674Z",
   "kind": "vite",
-  "contributing": {}
+  "contributing": {},
+  "templateMerges": []
 }
