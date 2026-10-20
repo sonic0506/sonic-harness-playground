@@ -1,0 +1,38 @@
+{
+  "origin": "https://github.com/sonic0506/sonic-harness-fe.git",
+  "ref": "2d7b1f00e3da00eccd09a6cc4bbba9be5c0bf346",
+  "checkedRef": "2d7b1f00e3da00eccd09a6cc4bbba9be5c0bf346",
+  "files": {
+    "commitlint.base.mjs": "19482207e6eae61445ab3c6938873ab4cb8c783c88fdb846198357bdc2dc383a",
+    "eslint.base.mjs": "1ddf8cfc45a7292914f5e675908ad03f2088fc00e5a3678ef122327c1b122017",
+    "harness.md": "1640b7a8c8a4f03da5b84f2932f88a908b9bb35cde2d33bc6a8f35894142b5fa",
+    "prettier.base.mjs": "34cb82dc9f744ff9bc384b7240ae30f91e3a685123c4985ee445f7e777c7b2ed",
+    "tsconfig.strict.json": "9ebfb76465f292fcc56a0119460788f8ad750204b636b9b6f754fa86029621a4"
+  },
+  "pending": [],
+  "templates": [
+    ".github/workflows/ci.yml",
+    ".husky/commit-msg",
+    ".husky/pre-commit",
+    ".prettierignore",
+    "CLAUDE.md",
+    "commitlint.config.mjs",
+    "eslint.config.mjs",
+    "lint-staged.config.mjs",
+    "playwright.config.ts",
+    "prettier.config.mjs",
+    "src/app/mocks/browser.ts",
+    "src/app/mocks/handlers.ts",
+    "src/app/providers/app-providers.tsx",
+    "src/app/providers/index.ts",
+    "src/shared/api/http.ts",
+    "src/shared/api/index.ts",
+    "src/shared/testing/index.ts",
+    "src/shared/testing/jest-dom.d.ts",
+    "src/shared/testing/render-with-query.tsx",
+    "src/shared/testing/server.ts",
+    "vitest.config.mts",
+    "vitest.setup.ts"
+  ],
+  "updatedAt": "2026-10-20T11:18:41.074Z"
+}
