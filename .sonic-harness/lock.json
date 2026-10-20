@@ -1,14 +1,14 @@
 {
   "origin": "https://github.com/sonic0506/sonic-harness-fe.git",
-  "ref": "649910ffd985f864502dbc61df953e45826484e7",
+  "ref": "d1dfa6152a1ab4dc75deed1b1df9cdfd5d1757e5",
   "checkedRef": "a3efb266b14da9df8da87af18033fd97ff81f2f0",
   "files": {
     "commitlint.base.mjs": "19482207e6eae61445ab3c6938873ab4cb8c783c88fdb846198357bdc2dc383a",
-    "eslint.base.mjs": "8a167c391563f3d63213646e6af2356a549de846bdde7203de10812e51c6e856",
-    "harness.md": "986da240caa96660d91bca5e0c374f1dbd05e83bf5a89c3718d0f3edf95c6c11",
+    "eslint.base.mjs": "376c4e71784d8d42d8ffa822b788c2c8798b995c7d190db6148eba04cd3929f9",
+    "harness.md": "fc71cefe3860e031723a3504b1ce6624f8fa402fb5f799351244c7fafd50cd3d",
     "prettier.base.mjs": "34cb82dc9f744ff9bc384b7240ae30f91e3a685123c4985ee445f7e777c7b2ed",
     "tsconfig.strict.json": "9ebfb76465f292fcc56a0119460788f8ad750204b636b9b6f754fa86029621a4",
-    "eslint-plugin-sonic.mjs": "ee1973886e08581ad468a66afbc06d949feda80598d01e123d647873a83a17d5"
+    "eslint-plugin-sonic.mjs": "dc3538f0ff34181e1c2b7ef4925b9fb3c70d12abffa9a441dbac0b02ad1b702c"
   },
   "pending": [],
   "templates": [
@@ -36,7 +36,7 @@
     "vitest.setup.ts",
     "src/app/providers/url-state-adapter.tsx"
   ],
-  "updatedAt": "2026-10-20T22:23:40.674Z",
+  "updatedAt": "2026-10-20T22:46:10.210Z",
   "kind": "vite",
   "contributing": {},
   "templateMerges": []
