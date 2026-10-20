@@ -6,30 +6,68 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import boundaries from 'eslint-plugin-boundaries';
 import checkFile from 'eslint-plugin-check-file';
 import globals from 'globals';
+import pluginQuery from '@tanstack/eslint-plugin-query';
+import testingLibrary from 'eslint-plugin-testing-library';
+import vitest from '@vitest/eslint-plugin';
+import sonic from './eslint-plugin-sonic.mjs';
 // sonic-ui 디자인 규칙(eslint-design-rules)이 no-restricted-syntax를 쓰므로 하네스는 그 규칙을 쓰지 않아요
 // (flat config는 같은 규칙을 덮어써요).
 
 const SRC = 'src/**/*.{ts,tsx}';
+const TEST = 'src/**/*.test.{ts,tsx}';
+// 테스트 이름은 해요체 문장이에요: it('검색어가 있으면 그 결과만 보여 줘요')
+const TITLE = '요[.!?]?$';
+const TITLE_MESSAGE = "테스트 이름은 '~하면 ~해요'처럼 해요체 문장으로 써요.";
 
 // 레이어 순서: 위 레이어는 아래 레이어만 가져올 수 있어요.
 const LAYERS = ['app', 'pages', 'widgets', 'features', 'entities', 'shared'];
 const below = (layer) => LAYERS.slice(LAYERS.indexOf(layer) + 1);
 
-// 모든 파일에 적용하는 import 제한. 아래에서 다시 쓸 때 함께 넣어요(규칙 옵션은 합쳐지지 않아요).
-const RESTRICTED_PATHS = [
-  {
+// import 제한. 위치마다 풀어 주는 항목이 달라서 이름으로 묶고, 아래 restricted()로 조합해요
+// (flat config에서는 같은 규칙의 옵션이 합쳐지지 않고 덮어써져요).
+const RESTRICTED = {
+  useQuery: {
     name: '@tanstack/react-query',
     importNames: ['useQuery', 'useQueries'],
     message:
       '조회는 useSuspenseQuery를 써요. 로딩·에러는 Suspense와 ErrorBoundary가 맡아요.',
   },
-  { name: 'axios', message: 'HTTP는 shared/api의 http 클라이언트를 써요.' },
-];
-const ZUSTAND = {
-  name: 'zustand',
-  message:
-    'Zustand는 store/ segment에서만 써요. 지금 전역 store는 entities/session 하나예요. 새 store가 필요하면 먼저 사용자에게 물어봐요.',
+  axios: {
+    name: 'axios',
+    message: 'HTTP는 shared/api의 http 클라이언트를 써요.',
+  },
+  zustand: {
+    name: 'zustand',
+    message:
+      'Zustand는 store/ segment에서만 써요. 여러 화면이 함께 쓰는 클라이언트 상태(로그인 정보, UI 환경설정)만 두고, 새 store는 먼저 사용자에게 물어봐요.',
+  },
+  createContext: {
+    name: 'react',
+    importNames: ['createContext'],
+    message:
+      'Context는 묶인 컴포넌트(compound) 내부 상태 전달용으로만, 그 컴포넌트 옆 ui/에서 만들어요. 화면 사이 공유는 Zustand, 서버 데이터는 Query예요.',
+  },
+  nuqs: {
+    name: 'nuqs',
+    message:
+      'URL 상태 훅은 slice의 model/(use-*-search-params.ts)에 만들고, 화면에서는 그 훅을 써요.',
+  },
+  ...Object.fromEntries(
+    ['react-router', 'react-router-dom', 'next/navigation'].map((name) => [
+      `searchParams:${name}`,
+      {
+        name,
+        importNames: ['useSearchParams'],
+        message:
+          'URL 상태는 nuqs로 다뤄요. slice의 model/에 use-*-search-params.ts 훅을 만들어 써요.',
+      },
+    ]),
+  ),
 };
+const restricted = (...allowed) =>
+  Object.entries(RESTRICTED)
+    .filter(([key]) => !allowed.includes(key))
+    .map(([, path]) => path);
 const PROPS_ONLY =
   'entities/*/ui는 props로만 데이터를 받아요. 조회 훅은 widgets/pages에서 불러 내려 줘요.';
 
@@ -165,10 +203,7 @@ export default tseslint.config(
   {
     files: [SRC],
     rules: {
-      'no-restricted-imports': [
-        'error',
-        { paths: [...RESTRICTED_PATHS, ZUSTAND] },
-      ],
+      'no-restricted-imports': ['error', { paths: restricted() }],
       'no-restricted-globals': [
         'error',
         {
@@ -181,7 +216,24 @@ export default tseslint.config(
   },
   {
     files: ['src/**/store/**'],
-    rules: { 'no-restricted-imports': ['error', { paths: RESTRICTED_PATHS }] },
+    rules: {
+      'no-restricted-imports': ['error', { paths: restricted('zustand') }],
+    },
+  },
+  {
+    files: ['src/**/model/**'],
+    rules: {
+      'no-restricted-imports': ['error', { paths: restricted('nuqs') }],
+    },
+  },
+  {
+    files: ['src/**/ui/**'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        { paths: restricted('createContext') },
+      ],
+    },
   },
   { files: ['src/**/api/**'], rules: { 'no-restricted-globals': 'off' } },
   {
@@ -191,8 +243,7 @@ export default tseslint.config(
         'error',
         {
           paths: [
-            ...RESTRICTED_PATHS.slice(1),
-            ZUSTAND,
+            ...restricted('createContext', 'useQuery'),
             { name: '@tanstack/react-query', message: PROPS_ONLY },
           ],
           patterns: [
@@ -210,6 +261,41 @@ export default tseslint.config(
           ],
         },
       ],
+    },
+  },
+
+  // TanStack Query: 공식 strict 규칙(prefer-query-options 포함)
+  ...pluginQuery.configs['flat/recommended-strict'],
+
+  // 로컬 규칙
+  {
+    files: [SRC],
+    plugins: { sonic },
+    rules: {
+      'sonic/no-context-export': 'error',
+      'sonic/store-selector': 'error',
+    },
+  },
+
+  // 테스트 파일: 사용자 행동 중심 테스트(harness.md 7절)
+  { files: [TEST], ...testingLibrary.configs['flat/react'] },
+  {
+    files: [TEST],
+    plugins: { vitest },
+    rules: {
+      ...vitest.configs.recommended.rules,
+      'vitest/valid-title': [
+        'error',
+        {
+          mustMatch: {
+            it: [TITLE, TITLE_MESSAGE],
+            test: [TITLE, TITLE_MESSAGE],
+          },
+        },
+      ],
+      'testing-library/prefer-user-event': 'error',
+      'sonic/no-test-id': 'error',
+      'sonic/no-internal-mock': 'error',
     },
   },
 );
