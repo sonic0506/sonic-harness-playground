@@ -1,6 +1,7 @@
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import { Suspense, useDeferredValue } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
+
 import { useUserListSearchParams } from './model/use-user-list-search-params';
 import { UserListSection } from './ui/user-list-section';
 

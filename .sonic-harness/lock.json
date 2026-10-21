@@ -1,14 +1,14 @@
 {
   "origin": "https://github.com/sonic0506/sonic-harness-fe.git",
-  "ref": "d1dfa6152a1ab4dc75deed1b1df9cdfd5d1757e5",
-  "checkedRef": "a3efb266b14da9df8da87af18033fd97ff81f2f0",
+  "ref": "54855d3bf93e1ca9ca86833e3b15e99d0263d993",
+  "checkedRef": "54855d3bf93e1ca9ca86833e3b15e99d0263d993",
   "files": {
     "commitlint.base.mjs": "19482207e6eae61445ab3c6938873ab4cb8c783c88fdb846198357bdc2dc383a",
-    "eslint.base.mjs": "376c4e71784d8d42d8ffa822b788c2c8798b995c7d190db6148eba04cd3929f9",
-    "harness.md": "fc71cefe3860e031723a3504b1ce6624f8fa402fb5f799351244c7fafd50cd3d",
+    "eslint.base.mjs": "46308c993ac55af30770c10aba62601af490f1a8d691629c0dc2fdeda36942de",
+    "harness.md": "e1b05396dd49c69efa72bfca13ee5562bb945f88344b12e3871eaf47cde3d728",
     "prettier.base.mjs": "34cb82dc9f744ff9bc384b7240ae30f91e3a685123c4985ee445f7e777c7b2ed",
     "tsconfig.strict.json": "9ebfb76465f292fcc56a0119460788f8ad750204b636b9b6f754fa86029621a4",
-    "eslint-plugin-sonic.mjs": "dc3538f0ff34181e1c2b7ef4925b9fb3c70d12abffa9a441dbac0b02ad1b702c"
+    "eslint-plugin-sonic.mjs": "e834b63ddc5f9aaeee83a92d33b8e877002dca458f519b73259b764f7274fbd9"
   },
   "pending": [],
   "templates": [
@@ -26,7 +26,6 @@
     "src/app/mocks/handlers.ts",
     "src/app/providers/app-providers.tsx",
     "src/app/providers/index.ts",
-    "src/shared/api/http.ts",
     "src/shared/api/index.ts",
     "src/shared/testing/index.ts",
     "src/shared/testing/jest-dom.d.ts",
@@ -34,9 +33,12 @@
     "src/shared/testing/server.ts",
     "vitest.config.mts",
     "vitest.setup.ts",
-    "src/app/providers/url-state-adapter.tsx"
+    "src/app/providers/url-state-adapter.tsx",
+    "src/shared/api/http.ts",
+    "src/shared/config/env.ts",
+    "src/shared/config/index.ts"
   ],
-  "updatedAt": "2026-10-20T22:46:10.210Z",
+  "updatedAt": "2026-10-21T01:55:11.781Z",
   "kind": "vite",
   "contributing": {},
   "templateMerges": []

@@ -1,4 +1,5 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
+
 import { userQueries } from '../api/user.queries';
 import type { GetUsersParams } from '../model/user.dto';
 

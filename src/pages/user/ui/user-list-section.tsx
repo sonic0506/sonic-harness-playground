@@ -1,4 +1,4 @@
-import { UserRow, useUsersQuery, type GetUsersParams } from '@/entities/user';
+import { type GetUsersParams, UserRow, useUsersQuery } from '@/entities/user';
 
 export function UserListSection({ page, q }: GetUsersParams) {
   const { data: users } = useUsersQuery({ page, q });

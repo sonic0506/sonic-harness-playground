@@ -1,4 +1,5 @@
 import { http, HttpResponse } from 'msw';
+
 import type { UserDto } from '../model/user.dto';
 
 const PAGE_SIZE = 5;
