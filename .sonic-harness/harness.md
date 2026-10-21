@@ -71,6 +71,7 @@ shared/api (http 클라이언트)
 - mock은 MSW예요. handler는 해당 slice의 `api/*.mock.ts`에 만들고 그 slice `index.ts`로 export해요(`userHandlers`). 모으는 곳은 **`app/mocks/handlers.ts`** 하나예요(shared는 entities를 몰라서 shared에서 모으지 않아요).
   - 테스트: `vitest.setup.ts`가 `shared/testing`의 `server`에 이 handler를 등록해요. 테스트에서는 `server.use(...)`로 빈 목록·에러만 덮어써요. 테스트마다 `setupServer`를 새로 만들지 않아요.
   - 개발 화면(Vite): `src/main.tsx`에서 dev일 때만 `@/app/mocks/browser`의 `worker.start()` 뒤에 렌더해요. `public/mockServiceWorker.js`는 `npx msw init public --save`로 만들어요(init이 해요).
+  - 개발 화면(Next): 템플릿이 이미 연결해 뒀어요. 서버 prefetch는 루트 `instrumentation.ts` → `app/mocks/server.ts`, 브라우저는 `app/providers/mock-starter.tsx`(`next/dynamic` + `ssr: false`)가 받아요. `.env.development.local`에 `NEXT_PUBLIC_API_MOCKING=true`를 두면 켜져요. `msw/browser`를 다른 곳에서 직접 import하지 않아요(서버 번들에서 풀리지 않아 빌드가 깨져요).
 
 ```ts
 // shared/api/http.ts
@@ -221,10 +222,11 @@ export function useUserDialog() {
 | `any`          | 쓰지 않아요. 라이브러리가 `any`를 돌려줘도 그대로 퍼뜨리지 않고 타입을 붙여요                                                                                                                                       | `no-explicit-any`, `no-unsafe-*` |
 | `unknown`      | 외부 값을 받는 **경계에서만**: `api/`(응답), `model/*.schema.ts`(zod 파서), `lib/`의 파서, `catch (error)`, `shared/config`. 받은 즉시 zod나 타입 가드로 좁혀서 넘겨요                                              | `sonic/unknown-at-boundary`      |
 | `as`           | 쓰지 않아요(`as const`는 괜찮아요). 응답 타입을 붙이는 경계(`api/`, `lib/`, `shared/`, 테스트)만 허용하고, 객체 리터럴 `{…} as T`는 어디서도 안 돼요. 대신 타입 주석(`const user: User = …`)이나 `satisfies`를 써요 | `consistent-type-assertions`     |
+| deprecated API | 쓰지 않아요. 라이브러리가 `@deprecated`로 표시한 함수는 안내된 대체 API를 써요(예: `prefetchQuery` → `query(...).catch(noop)`, `isServer` → `environmentManager.isServer()`)                                        | `no-deprecated`                  |
 | `!` (non-null) | 쓰지 않아요. `if (!x) return`, `??`, `?.`로 처리해요                                                                                                                                                                | `no-non-null-assertion`          |
 | `enum`         | 쓰지 않아요. `const ROLE = { admin: 'admin' } as const` + `type Role = (typeof ROLE)[keyof typeof ROLE]`                                                                                                            | `sonic/no-enum`                  |
 | `switch`       | 유니언을 다루면 모든 경우를 써요. 값이 늘면 lint가 알려 줘요                                                                                                                                                        | `switch-exhaustiveness-check`    |
-| import 순서    | 외부 패키지 → `@/` → 상대 경로 → 스타일. 직접 맞추지 않고 `eslint --fix`(hook·lint-staged)가 맞춰요                                                                                                                 | `simple-import-sort`             |
+| import 순서    | 부수 효과 import(`import './x.css'`) → 외부 패키지 → `@/` → 상대 경로. 직접 맞추지 않고 `eslint --fix`(hook·lint-staged)가 맞춰요                                                                                   | `simple-import-sort`             |
 
 ### 환경 변수
 
@@ -349,7 +351,8 @@ export async function UserListPage({
 }) {
   const page = Number((await searchParams).page ?? 1);
   const queryClient = getQueryClient();
-  await queryClient.prefetchQuery(userQueries.list({ page }));
+  // 실패해도 화면은 그려요. 에러는 클라이언트 쪽 ErrorBoundary가 받아요(prefetchQuery는 deprecated)
+  await queryClient.query(userQueries.list({ page })).catch(noop);
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Suspense fallback={<UserListSkeleton />}>
